@@ -5,6 +5,8 @@ import { ArrowLeft } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 import logo from "@/public/logo.png"; // đúng là "default import", không destructuring
+import { Toaster } from "@/components/ui/sonner";
+
 
 
 
@@ -26,7 +28,7 @@ export default function AuthLayout({children}: {children: ReactNode}) {
                     Funtime Media Corp    
                 </Link>
                 {children}
-
+                <Toaster/>
                 <div className="text-balance text-center text-xs text-mute">
                     By clicking countinue, you agree to our <span className="hover:text-blue-400 hover:underline">Term of service </span>
                     {""}
