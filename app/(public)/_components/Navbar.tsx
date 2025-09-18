@@ -20,7 +20,7 @@ export function Navbar() {
                     <span className='font-bold'>Funtime Media Corp</span>
                 </Link>
                 {/* {Desktop navigation} */}
-                <nav>
+                <nav className='hidden md:flex md:flex-1 md:items-center md:justify-between'>
                     <div className='flex items-center space-x-2'>
                         {navigationItems.map((item) => 
                             <Link key={item.name} href={item.href} className='text-sm font-medium transition-colors hover:text-gray-300'>{item.name}</Link>
