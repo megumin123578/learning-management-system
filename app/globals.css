@@ -5,6 +5,7 @@
   --foreground: #171717;
   --color-accent: #f3f4f6;            /* neutral-100 */
   --color-accent-foreground: #0a0a0a;
+  
 }
 
 /* map sang token Tailwind v4 (tùy chọn, vẫn giữ nếu bạn dùng bg-background/text-foreground) */
@@ -20,7 +21,6 @@
   --background: #0a0a0a;
   --foreground: #ededed;
   --color-accent: #1f2937;            /* neutral-800 */
-  --color-accent-foreground: #f5f5f5;
 }
 
 body {
