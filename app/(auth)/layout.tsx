@@ -8,8 +8,6 @@ import logo from "@/public/logo.png"; // đúng là "default import", không des
 import { Toaster } from "@/components/ui/sonner";
 
 
-
-
 export default function AuthLayout({children}: {children: ReactNode}) {
 
     return (

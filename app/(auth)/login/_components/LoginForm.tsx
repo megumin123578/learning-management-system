@@ -2,15 +2,19 @@
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Loader, LogInIcon } from "lucide-react";
+import { Loader, Loader2, LogInIcon, Send } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from '@/components/ui/input'
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 export function LoginForm() {
-    const [githubPending, startGithubTransition] = useTransition()
+    const router = useRouter()
+    const [githubPending, startGithubTransition] = useTransition();
+    const [emailPending, startemailTransition] = useTransition();
+    const [email, setEmail] = useState("")
     async function signInWithGithub(){
         startGithubTransition(async () => {
                     await authClient.signIn.social(
@@ -22,15 +26,32 @@ export function LoginForm() {
                         toast.success('Signed in with github, you will be redirected soon...')
                      
                     },
-                    onError: (error) => {
-                    console.error("Github sign-in error:", error);
-                    toast.error(error?.error?.message || "Something went wrong.");
+                    onError: (error: any) => {
+                    toast.error(error?.error?.message ?? error?.message ?? "Something went wrong.");
                     }
+
                 }
             }
         )
         })
 
+    }
+    function signInwithEmail() {
+        startemailTransition(async() => {
+            await authClient.emailOtp.sendVerificationOtp({
+                email: email,
+                type: "sign-in",
+                fetchOptions: {
+                    onSuccess: ()=> {
+                        toast.success('Email sent')
+                        router.push(`/verify-request`)
+                    },
+                    onError: () => {
+                        toast.error('Sent email failed!')
+                    }
+                }
+            })
+        })
     }
     return(
     <Card>
@@ -69,9 +90,27 @@ export function LoginForm() {
             <div className="grid gap-3">
                 <div className="grid gap-2">
                     <Label>Username</Label>
-                    <Input placeholder="Enter your usename"/>
+                    <Input value = {email} 
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="email"
+                    placeholder="username@gmail.com"
+                    required/>
+                    
                 </div>
-                <Button className="bg-neutral-900 text-white hover:bg-yellow-300 focus-visible:ring-2 focus-visible:ring-green-600 w-full" variant = "outline">Continue with email</Button>
+                <Button onClick={signInwithEmail} disabled={emailPending} className="bg-neutral-900 text-white hover:bg-yellow-300 focus-visible:ring-2 focus-visible:ring-green-600 w-full" variant = "outline">
+                    {emailPending ? (
+                        <>
+                            <Loader2 className='size-4 animate-spin'/>
+                            <span>Loading...</span>
+                        </>
+                    ):(
+                        <>
+                            <Send className="size-4"/>
+                            <span>Continue with Email</span>
+                        </>
+                    )
+                    }
+                </Button>
             </div>
 
 
