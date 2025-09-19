@@ -77,7 +77,7 @@ export default function Home() {
             href="/course"
             className={cn(
               buttonVariants({ size: "lg", variant: "outline" }),
-              "bg-white text-black",
+              "text-popover-foreground",
 
             )}
           >
@@ -95,7 +95,7 @@ export default function Home() {
       
     </section>
 
-    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-32">
       {features.map((feature, index) => (
         <Card
           key={index}
