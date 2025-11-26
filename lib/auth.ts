@@ -8,9 +8,15 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
     provider: "postgresql",}),
 
+    trustedOrigins: [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://192.168.1.151:3000",
+    ],
+
     socialProviders: {
         github: {
-            clientId: env.AUTH_GITHUB_CILENT_ID,
+            clientId: env.AUTH_GITHUB_CLIENT_ID,
             clientSecret: env.AUTH_GITHUB_SECRET
         },
         google: {
