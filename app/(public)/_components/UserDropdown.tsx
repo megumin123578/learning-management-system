@@ -44,7 +44,7 @@ export function UserDropDown({email,name, image} : iAppProps) {
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="max-w-64 z-[1000] bg-popover text-popover-foreground ring-1 ring-border shadow-md rounded-md"
+        className="min-w-48 z-[1000] bg-popover text-popover-foreground ring-1 ring-border shadow-md rounded-md"
       >
         <DropdownMenuLabel className="flex min-w-0 flex-col">
           <span className="truncate text-sm font-medium">{name}</span>
