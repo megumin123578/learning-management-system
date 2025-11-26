@@ -114,7 +114,7 @@ export default function CreateCourseForm() {
                                 </FormLabel>
                                 <FormControl>
                                     {/* <Textarea placeholder = 'Description' className="min-h-[120]" {...field}></Textarea> */}
-                                    <RichTextEditor/>
+                                    <RichTextEditor field={field}/>
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
