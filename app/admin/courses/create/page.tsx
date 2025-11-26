@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import slugify from 'slugify'
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
+import { RichTextEditor } from "@/components/rich-text-editor/Editor";
 
 
 export default function CreateCourseForm() {
@@ -113,7 +113,8 @@ export default function CreateCourseForm() {
                                     Description
                                 </FormLabel>
                                 <FormControl>
-                                    <Textarea placeholder = 'Description' className="min-h-[120]" {...field}></Textarea>
+                                    {/* <Textarea placeholder = 'Description' className="min-h-[120]" {...field}></Textarea> */}
+                                    <RichTextEditor/>
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>
@@ -132,79 +133,89 @@ export default function CreateCourseForm() {
                                 <FormMessage/>
                             </FormItem>
                         )}/>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 py-2">
-                            <FormField control = {form.control}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-2">
+                            {/* Category */}
+                            <FormField
+                                control={form.control}
                                 name='category'
-                                render={({field}) => (
-                                    <FormItem className="w-full">
-                                        <FormLabel>Category</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder='Select a Category'/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {courseCategories.map((category) => (
-                                                    <SelectItem key={category} value={category}>
-                                                        {category}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </FormItem>
-                                )}>
-                                
-                            </FormField>
-                            <FormField control = {form.control}
-                                name='level'
-                                render={({field}) => (
-                                    <FormItem className="w-full">
-                                        <FormLabel>Level</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder='Select a Category'/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {courseLevels.map((level) => (
-                                                    <SelectItem key={level} value={level}>
-                                                        {level}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </FormItem>
-                                )}>
-                                
-                            </FormField>
-                        </div>
-                        <FormField control = {form.control}
-                                name='status'
-                                render={({field}) => (
-                                    <FormItem className="w-full">
-                                        <FormLabel>Status</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder='Status'/>
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                {courseStatus.map((status) => (
-                                                    <SelectItem key={status} value={status}>
-                                                        {status}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </FormItem>
-                                )}>
-                                
-                            </FormField>
+                                render={({ field }) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Category</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger className="w-full">
+                                        <SelectValue placeholder='Select a Category' />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {courseCategories.map((category) => (
+                                        <SelectItem key={category} value={category}>
+                                            {category}
+                                        </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                    </Select>
+                                </FormItem>
+                                )}
+                            />
 
-                    <Button > Create Course <PlusIcon className="ml-1"/></Button>
+                            {/* Level */}
+                            <FormField
+                                control={form.control}
+                                name='level'
+                                render={({ field }) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Level</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger className="w-full">
+                                        <SelectValue placeholder='Select Level' />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {courseLevels.map((level) => (
+                                        <SelectItem key={level} value={level}>
+                                            {level}
+                                        </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                    </Select>
+                                </FormItem>
+                                )}
+                            />
+
+                            {/* Status */}
+                            <FormField
+                                control={form.control}
+                                name='status'
+                                render={({ field }) => (
+                                <FormItem className="w-full">
+                                    <FormLabel>Status</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger className="w-full">
+                                        <SelectValue placeholder='Status' />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {courseStatus.map((status) => (
+                                        <SelectItem key={status} value={status}>
+                                            {status}
+                                        </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                    </Select>
+                                </FormItem>
+                                )}
+                            />
+                            </div>
+
+
+                    <div className="flex justify-end pt-4">
+                        <Button type="submit">
+                            Create Course <PlusIcon className="ml-1" />
+                        </Button>
+                    </div>
                 </Form>
             </CardContent>
         </Card>
