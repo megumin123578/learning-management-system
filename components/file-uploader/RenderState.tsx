@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
-import { CloudUploadIcon } from "lucide-react";
+import { CloudUploadIcon, ImageIcon } from "lucide-react";
+import { Button } from "../ui/button";
 
 export function RenderEmptyState({isDragActive}: {isDragActive:boolean}) {
 
@@ -15,7 +16,23 @@ export function RenderEmptyState({isDragActive}: {isDragActive:boolean}) {
             <p className="text-base font-semibold text-foreground">
                 Drop your files here or <span className="text-primary font-bold cursor-pointer">Click to upload</span>
             </p>
+            <Button type="button" className="mt-4">
+                Select Files
+            </Button>
         </div>
     )
 
+}
+
+export function RenderErrorState() {
+    return (
+        <div className="text-destructive text-center">
+            <div className="flex items-center mx-auto justify-center size-12 rounded-full bg-destructive/30 mb-4">
+                <ImageIcon className={cn('size-6 text-destructive')}/>
+            </div>
+            <p className="text-base font-semibold">Upload failed</p>
+            <p className="text-xs mt-1 text-muted-foreground">Something went wrong</p>
+            <p className="text-xl mt-3 text-muted-foreground">Click or drag file to try again</p>
+        </div>
+    )
 }
