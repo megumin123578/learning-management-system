@@ -77,7 +77,6 @@ model Course {
   title String
   description String
   fileKey String
-  duration Int
   level String
   category String
   smallDescription String

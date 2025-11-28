@@ -1,7 +1,7 @@
 'use client';
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { courseStatus, courseLevels, courseCategories, courseSchema, courseSchemaType } from "@/lib/zodSchema";
+import { courseStatus, courseLevels, courseCategories, courseSchema, CourseSchemaType } from "@/lib/zodSchema";
 import { ArrowLeft, PlusIcon, SparkleIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from 'react-hook-form'
@@ -30,7 +30,7 @@ export default function CreateCourseForm() {
         }
     })
 
-    function onSubmit(values: courseSchemaType) {
+    function onSubmit(values: CourseSchemaType) {
         console.log(values)
     }
     return (
