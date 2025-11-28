@@ -25,18 +25,18 @@ export default function CreateCourseForm() {
     const [isPending, startTransition] = useTransition()
     const router = useRouter()
 
-    const form = useForm({
-        resolver: zodResolver(courseSchema),
-        defaultValues: {
-            title: '',
-            description: '',
-            fileKey: '',
-            level: 'Beginner',
-            category: 'Design',
-            smallDescription: '',
-            slug: '',
-            status: 'Draft',
-        }
+    const form = useForm<CourseSchemaType>({
+    resolver: zodResolver(courseSchema),
+    defaultValues: {
+        title: '',
+        description: '',
+        fileKey: '',
+        level: 'Beginner',
+        category: 'Design',
+        smallDescription: '',
+        slug: '',
+        status: 'Draft',
+    }
     })
     
     //2.Define a sumbit handler 
@@ -51,7 +51,7 @@ export default function CreateCourseForm() {
             if (result.status === 'success') {
                 toast.success(result.message)
                 form.reset()
-                router.push('/admin/course')
+                router.push('/admin/courses')
             }
             else if (result.status === 'error') {
                 toast.error(result.message)
