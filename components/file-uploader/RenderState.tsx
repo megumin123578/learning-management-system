@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
-import { CloudUploadIcon, ImageIcon } from "lucide-react";
+import { CloudUploadIcon, ImageIcon, Loader2, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 export function RenderEmptyState({isDragActive}: {isDragActive:boolean}) {
 
@@ -35,4 +36,53 @@ export function RenderErrorState() {
             <p className="text-xl mt-3 text-muted-foreground">Click or drag file to try again</p>
         </div>
     )
+}
+
+export function RenderUploadingState({progress, file}: {progress: number, file: File}) {
+    return (
+        <div className="text-center flex justify-center items-center flex-col">
+            <p>{progress}</p>
+            <p className="mt-2 text-sm font-medium text-foreground">
+                Uploading...
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground truncate max-w-xs">{file.name}</p>
+
+        </div>
+    )
+}
+
+
+export function RenderUploadedState({
+    previewURL,
+    isDeleting,
+    handleRemoveFile
+}: {
+    previewURL: string,
+    isDeleting: boolean,
+    handleRemoveFile: () => void
+}) {
+    return (
+        <div className="relative w-full h-64">
+            <Image
+                src={previewURL}
+                alt="Uploaded File"
+                fill
+                className="object-contain p-2"
+            />
+
+            <Button
+                variant="destructive"
+                size="icon"
+                className="absolute top-4 right-4"
+                onClick={handleRemoveFile}
+                disabled={isDeleting}
+            >
+                {isDeleting ? (
+                    <Loader2 className="size-4 animate-spin" />
+                ) : (
+                    <XIcon className="size-4" />
+                )}
+            </Button>
+        </div>
+    );
 }

@@ -1,9 +1,9 @@
 "use client";
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {FileRejection, useDropzone} from 'react-dropzone';
 import { Card, CardContent } from '../ui/card';
 import { cn } from '@/lib/utils';
-import {RenderEmptyState, RenderErrorState}  from './RenderState';
+import {RenderEmptyState, RenderErrorState, RenderUploadedState, RenderUploadingState}  from './RenderState';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid'
 
@@ -115,9 +115,11 @@ export function Uploader() {
     }
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
-        
         if(acceptedFiles.length > 0) {
             const file = acceptedFiles[0]
+            if(fileState.objectUrl && !fileState.objectUrl.startsWith('http')) {
+                URL.revokeObjectURL(fileState.objectUrl)
+            }
             setFileState({
                 file: file,
                 uploading: false,
@@ -132,7 +134,54 @@ export function Uploader() {
             uploadFile(file)
         }
 
-    }, [])
+    }, [fileState.objectUrl])
+
+    async function handleRemoveFile() {
+        if(fileState.isDeleting || !fileState.objectUrl) return
+
+        try {
+            setFileState((prev) => ({
+                ...prev,
+                isDeleting: true,
+            }))
+            const response = await fetch('/api/s3/delete', 
+            {   method: 'DELETE', 
+                headers: {'Content-Type': 'application/json'} ,
+                body: JSON.stringify({key: fileState.key})
+            })
+            if(!response.ok) {
+                toast.error('Failed to delete file')
+                setFileState((prev)=> ({
+                    ...prev,
+                    isDeleting: true,
+                    error: true
+                }))
+            return
+            }
+           
+            if(fileState.objectUrl && !fileState.objectUrl.startsWith('http')) {
+                URL.revokeObjectURL(fileState.objectUrl)
+            }
+            setFileState(()=> ({
+                    file: null,
+                    id: null,
+                    uploading: false,
+                    progress: 0,
+                    isDeleting: false,
+                    error: false,
+                    objectUrl: undefined,
+                    fileType: 'image',
+            }))
+            toast.success('File deleted successfully')
+        } catch {
+            toast.error('An error occurred while deleting file, please try again')
+            setFileState((prev)=> ({
+                    ...prev,
+                    isDeleting: false,
+                    error: true
+            }))
+        }
+    }
 
     function rejectedFiles(fileRejection: FileRejection[]){
         if(fileRejection.length) {
@@ -157,7 +206,7 @@ export function Uploader() {
     function renderContent() {
         if(fileState.uploading) {
             return (
-                <h1>Uploading...</h1>
+                <RenderUploadingState progress ={fileState.progress} file ={fileState.file!}/>
             )
         }
         if(fileState.error) {
@@ -166,11 +215,19 @@ export function Uploader() {
 
         if(fileState.objectUrl) {
             return (
-                <h1>Uploaded file</h1>
+                <RenderUploadedState handleRemoveFile={handleRemoveFile} isDeleting={fileState.isDeleting} previewURL= {fileState.objectUrl}/>
             )
         }
         return <RenderEmptyState isDragActive={isDragActive}/>
     }
+
+    useEffect(() => {
+        return () => {
+            if(fileState.objectUrl && !fileState.objectUrl.startsWith('http')) {
+                URL.revokeObjectURL(fileState.objectUrl)
+            }
+        }
+    }, [fileState.objectUrl])
 
     const {getRootProps, getInputProps, isDragActive} = useDropzone({
         onDrop, 
@@ -179,6 +236,7 @@ export function Uploader() {
         multiple:false, 
         maxSize: 5*1024*1024,
         onDropRejected: rejectedFiles,
+        disabled: fileState.uploading || !!fileState.objectUrl
     });
     return (
         <Card {...getRootProps()} className={cn(
