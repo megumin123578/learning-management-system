@@ -72,7 +72,7 @@ export default function CreateCourseForm() {
                             </FormItem>
                         )}/>
 
-                    </form>
+                    
                     <div className="flex gap-4 items-end py-2">
                         <FormField control={form.control}
                         name='slug'
@@ -217,6 +217,7 @@ export default function CreateCourseForm() {
                             Create Course <PlusIcon className="ml-1" />
                         </Button>
                     </div>
+                    </form>
                 </Form>
             </CardContent>
         </Card>

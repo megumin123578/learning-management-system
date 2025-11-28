@@ -5,7 +5,6 @@ import { Card, CardContent } from '../ui/card';
 import { cn } from '@/lib/utils';
 import {RenderEmptyState, RenderErrorState}  from './RenderState';
 import { toast } from 'sonner';
-import { set, StringFormatParams } from 'better-auth';
 import { v4 as uuidv4 } from 'uuid'
 
 interface UploaderState {
@@ -32,7 +31,7 @@ export function Uploader() {
         fileType: 'image'
     })
 
-    function uploadFile(file:File) {
+    async function uploadFile(file:File) {
         setFileState((prev) => ({ //only update uploading and progress values
             ...prev,
             uploading: true,
@@ -40,9 +39,78 @@ export function Uploader() {
 
         }))
         try {
-            
-        } catch {
+            //1. get presigned url
+            const presignedResponse = await fetch('/api/s3/upload', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    fileName: file.name,
+                    contentType: file.type,
+                    size: file.size,
+                    isImage: true,
+                })
+            })
 
+            if(!presignedResponse.ok) {
+                toast.error('Failed to get presigned URL')
+                setFileState((prev) => ({ //only update uploading and progress values
+                ...prev,
+                uploading: false,
+                progress: 0, 
+                error: true
+                }))
+
+                return
+            }
+            const { presignUrl, key } = await presignedResponse.json()
+
+            await new Promise<void>((resolve, reject) => {
+                const xhr = new XMLHttpRequest()
+                xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percentageCompleted = (event.loaded / event.total) * 100
+                    setFileState((prev) => ({
+                        ...prev,
+                        progress: Math.round(percentageCompleted),
+                    }))
+                }
+            }
+
+            xhr.onerror = () => {
+                reject(new Error('Upload failed...'))
+            }
+
+            xhr.onload = () => {
+                if (xhr.status === 200 || xhr.status === 204) {
+                    setFileState((prev) => ({
+                        ...prev,
+                        progress: 100,
+                        uploading: false,
+                        key: key,
+                    }))
+
+                    toast.success("File uploaded successfully!")
+
+                    resolve()
+                } else {
+                    reject(new Error("Upload failed with status " + xhr.status))
+                }
+            }
+
+
+                xhr.open('PUT', presignUrl)
+                xhr.setRequestHeader('Content-Type', file.type)
+                xhr.send(file)
+            })
+        } catch {
+            toast.error('An error occurred during file upload.')
+
+            setFileState((prev) => ({
+                ...prev,
+                progress: 0,
+                error: true,
+                uploading: false
+            }))
         }
     }
 
@@ -60,14 +128,14 @@ export function Uploader() {
                 isDeleting: false,
                 fileType: 'image'
             })
+
+            uploadFile(file)
         }
 
     }, [])
 
     function rejectedFiles(fileRejection: FileRejection[]){
         if(fileRejection.length) {
-
-            
 
             const tooManyFiles = fileRejection.find(
                 (rejection) => rejection.errors[0].code === 'too-many-files'
@@ -85,6 +153,25 @@ export function Uploader() {
             }
         }
     }
+
+    function renderContent() {
+        if(fileState.uploading) {
+            return (
+                <h1>Uploading...</h1>
+            )
+        }
+        if(fileState.error) {
+            return <RenderErrorState/>
+        }
+
+        if(fileState.objectUrl) {
+            return (
+                <h1>Uploaded file</h1>
+            )
+        }
+        return <RenderEmptyState isDragActive={isDragActive}/>
+    }
+
     const {getRootProps, getInputProps, isDragActive} = useDropzone({
         onDrop, 
         accept: {'image/*': []}, 
@@ -101,7 +188,8 @@ export function Uploader() {
         )}>
             <CardContent className='flex items-center justify-center h-full w-full p-4'>
                 <input {...getInputProps()}/>
-                <RenderEmptyState isDragActive={isDragActive}/>
+                {renderContent()}
+                {/* <RenderEmptyState isDragActive={isDragActive}/> */}
                 {/* <RenderEmptyState isDragActive={isDragActive}/> */}
                 {/* <RenderErrorState/> */}
             </CardContent>
