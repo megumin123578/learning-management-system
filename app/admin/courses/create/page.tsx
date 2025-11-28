@@ -22,7 +22,6 @@ export default function CreateCourseForm() {
             title: '',
             description: '',
             fileKey: '',
-            duration: 0,
             level: 'Beginner',
             category: 'Design',
             smallDescription: '',
@@ -128,8 +127,7 @@ export default function CreateCourseForm() {
                                     Thumbnail image
                                 </FormLabel>
                                 <FormControl>
-                                    <Uploader/>
-                                    {/* <Input placeholder = 'Thumbnail url' {...field}></Input> */}
+                                    <Uploader onChange={field.onChange} value={field.value}/>
                                 </FormControl>
                                 <FormMessage/>
                             </FormItem>

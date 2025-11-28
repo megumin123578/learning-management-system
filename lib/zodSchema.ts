@@ -6,7 +6,7 @@ export const courseStatus = ['Draft','Publish','Archive'] as const;
 export const courseCategories = ['Design', 'Edit','Video Filming','Content writing'] as const;
 export const courseSchema = z.object({
     title: z.string().min(3, {message: 'Title must be at least 3 characters'}).max(100, {message: 'Title must be at most 100 characters'}),
-    description: z.string().min(3, { message: 'Description must be at least 3 characters' }),
+    description: z.string().min(10, { message: 'Description must be at least 10 characters' }),
     fileKey: z.string().min(1, {message: 'File is required'}),
     duration: z.coerce.number().min(1).optional(),
     level: z.enum(courseLevels,{message:"Level is requiresd"}),
